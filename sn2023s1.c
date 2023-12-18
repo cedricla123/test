@@ -105,7 +105,7 @@ int main(void)
 	
 	for(i = 0 ; i < n ; i++)
 
-		if(matricule == !tab[i].matricule)
+		if(matricule != tab[i].matricule)
 
 			printf("matricule introuvable\n");
 		else
