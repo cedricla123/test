@@ -3,7 +3,7 @@
 #include<string.h>
 #include"projet.h"
 
-void saisir()
+void saisir(void)
 {
     etud e[SIZE];
     int i,j;
@@ -19,7 +19,6 @@ void saisir()
     {
         printf("Entrer le numero de CNI de l'etudiant %d : ",i+1);
         scanf("%s", e[i].CNI);
-        printf("%s\n", e[i].CNI);
         printf("Entrez le nom de l'etudiant %d : ", i+1);
         scanf("%s", e[i].nom);
         printf("Entrez le prenom de l'etudiant %d : ", i+1);
@@ -45,11 +44,8 @@ void saisir()
             j++;
         }
     }
-    fprintf(F, "----------------------------------------------------------------------------------------------------------------\n");
-    fprintf(F, "|CNI         |NOM         |PRENOM      |AGE         |FILIERE     |NIVEAU      |COTISATIONS                     |\n");
-    for(i=0; i<n-1 ; i++)
+    for(i=0; i<n ; i++)
     {
-        LINES;
         fprintf(F,"%s ; ",e[i].CNI);
         fprintf(F,"%s ; ",e[i].nom);
         fprintf(F,"%s ; ",e[i].prenom);
@@ -57,42 +53,27 @@ void saisir()
         fprintf(F,"%s ; ",e[i].filiere);
         fprintf(F,"%d ; ",e[i].niveau);
         for(j=0 ; j<5 ; j++)
-            fprintf(F,"%f ; ",e[i].cotisation[j]);
+            fprintf(F," ; %.1f",e[i].cotisation[j]);
         fprintf(F, "\n");
     }
-    LINES;
-    fprintf(F,"%s ; ",e[n-1].CNI);
-    fprintf(F,"%s ; ",e[n-1].nom);
-    fprintf(F,"%s ; ",e[n-1].prenom);
-    fprintf(F,"%d ; ",e[n-1].age);
-    fprintf(F,"%s ; ",e[n-1].filiere);
-    fprintf(F,"%d ; ",e[n-1].niveau);
-    for(j=0 ; j<5 ; j++)
-        fprintf(F,"%f ; |",e[n-1].cotisation[j]);
-    fprintf(F, "\n");
-    fprintf(F, "--------------------------------------------------------------------------------------------------------\n");
     fclose(F);
 }
-void ajouter()
+void ajouter(void)
 {
     int j;
     etud e;
     FILE* F; 
     F = ouverture3("../files/etudiants.txt");
-    e.age = 18;
     add(&e);
-    LINES;
     fprintf(F,"%s ; ",e.CNI);
     fprintf(F,"%s ; ",e.nom);
     fprintf(F,"%s ; ",e.prenom);
     fprintf(F,"%d ; ",e.age);
     fprintf(F,"%s ; ",e.filiere);
-    fprintf(F,"%d ; ",e.niveau);
-    for(j=0 ; j<4 ; j++)
-        fprintf(F,"%f ; ",e.cotisation[j]);
-    fprintf(F,"%f ; ",e.cotisation[4]);
+    fprintf(F,"%d",e.niveau);
+    for(j=0 ; j<5 ; j++)
+        fprintf(F," ; %.1f",e.cotisation[j]);
     fprintf(F, "\n");
-    fprintf(F, "--------------------------------------------------------------------------------------------------------\n");
     fclose(F);
 }
 FILE *ouverture1(const char* Name)
@@ -156,22 +137,22 @@ void add(etud* e)
     }
 }
 
-void modifier()
+void modifier(void)
 {
-    int i,j;
+    int i=0,j,n;
     etud e[SIZE];
     char matricule[N];
-    int n;
     FILE *F;
     F = ouverture1("../files/etudiants.txt");
-    for(i=0 ; i<n ; i++)
+    while(!feof(F))
     {
-        fscanf(F, "%s ; %s ; %s ; %d ; %s ; %d ; ", e[i].CNI,e[i].nom,e[i].prenom,&e[i].age,e[i].filiere,&e[i].niveau);
+        fscanf(F, "%s ; %s ; %s ; %d ; %s ; %d", e[i].CNI,e[i].nom,e[i].prenom,&e[i].age,e[i].filiere,&e[i].niveau);
         for(j=0 ; j<5 ; j++)
-            fscanf(F, "%f ; ",&e[i].cotisation[j]);
+            fscanf(F, " ; %f",&e[i].cotisation[j]);
+        i++;
     }
     fclose(F);
-    n = i;
+    n = i-1;
     printf("Entrez le numero de CNI de l'etudiant a modifier ces informations : ");
     scanf("%s", matricule);
     int trouver = -1;
@@ -219,32 +200,339 @@ void modifier()
     else
         printf("Etudiant n'existe pas!!\n");
     F = ouverture2("../files/etudiants.txt");
-    fprintf(F, "----------------------------------------------------------------------------------------------------------------\n");
-    fprintf(F, "|CNI         |NOM         |PRENOM      |AGE         |FILIERE     |NIVEAU      |COTISATIONS                     |\n");
-    for(i=0; i<n-1 ; i++)
+    for(i=0; i<n ; i++)
     {
-        LINES;
         fprintf(F,"%s ; ",e[i].CNI);
-        fprintf(F,"%11s ; ",e[i].nom);
-        fprintf(F,"%11s ; ",e[i].prenom);
-        fprintf(F,"%11d ; ",e[i].age);
-        fprintf(F,"%11s ; ",e[i].filiere);
-        fprintf(F,"%11d ; ",e[i].niveau);
+        fprintf(F,"%s ; ",e[i].nom);
+        fprintf(F,"%s ; ",e[i].prenom);
+        fprintf(F,"%d ; ",e[i].age);
+        fprintf(F,"%s ; ",e[i].filiere);
+        fprintf(F,"%d",e[i].niveau);
         for(j=0 ; j<5 ; j++)
-            fprintf(F,"%f ; ",e[i].cotisation[j]);
+            fprintf(F," ; %.1f",e[i].cotisation[j]);
         fprintf(F, "\n");
     }
-    LINES;
-    fprintf(F,"%s ; ",e[n-1].CNI);
-    fprintf(F,"%11s ; ",e[n-1].nom);
-    fprintf(F,"%11s ; ",e[n-1].prenom);
-    fprintf(F,"%11d ; ",e[n-1].age);
-    fprintf(F,"%11s ; ",e[n-1].filiere);
-    fprintf(F,"%12d ; ",e[n-1].niveau);
-    for(j=0 ; j<4 ; j++)
-        fprintf(F,"%f ; ",e[n-1].cotisation[j]);
-    fprintf(F,"%f ; ",e[n-1].cotisation[4]);
-    fprintf(F, "\n");
-    fprintf(F, "----------------------------------------------------------------------------------------------------------------\n");
     fclose(F);
+}
+
+void supprimer(char matricule[10])
+{
+    int i = 0,j,n,trouver = -1;
+    etud e[SIZE];
+    FILE *F;
+   
+    F = ouverture1("../files/etudiants.txt");
+    while(!feof(F))
+    {
+        fscanf(F, "%s ; %s ; %s ; %d ; %s ; %d", e[i].CNI,e[i].nom,e[i].prenom,&e[i].age,e[i].filiere,&e[i].niveau);
+        for(j=0 ; j<5 ; j++)
+            fscanf(F, " ; %f",&e[i].cotisation[j]);
+        i++;
+    }
+    fclose(F);
+    n = i-1;
+    int p;
+    i = 0;
+    while((i < n) && (trouver == -1))
+    {
+        p = strcmp(e[i].CNI , matricule);
+        if(p == 0)
+           trouver = i; 
+        else
+           i++; 
+    }
+    i = 0;
+    if(trouver != -1)
+    {
+        F = ouverture2("../files/etudiants.txt");
+        while(i < n)
+        {
+            if(i != trouver)
+            {
+                fprintf(F,"%s ; ",e[i].CNI);
+                fprintf(F,"%s ; ",e[i].nom);
+                fprintf(F,"%s ; ",e[i].prenom);
+                fprintf(F,"%d ; ",e[i].age);
+                fprintf(F,"%s ; ",e[i].filiere);
+                fprintf(F,"%d",e[i].niveau);
+                for(j=0 ; j<5 ; j++)
+                    fprintf(F," ; %.1f",e[i].cotisation[j]);
+                fprintf(F, "\n");
+            }
+            i++;
+        }
+    }
+    else
+        printf("Le matricule saisie n'exite pas dans la liste des etudiants!!\n");
+    fclose(F);
+}
+float somme(float* TA, int n)
+{
+    float som=0;
+    int i;
+    for(i=0 ; i<n ; i++)
+        som += TA[i];
+    return som;
+}
+
+void affichage(void)
+{
+    float som = 0;
+    etud e[SIZE];
+    int i = 0,j,n;
+
+    FILE *F;
+   
+    F = ouverture1("../files/etudiants.txt");
+    while(!feof(F))
+    {
+        fscanf(F, "%s ; %s ; %s ; %d ; %s ; %d", e[i].CNI,e[i].nom,e[i].prenom,&e[i].age,e[i].filiere,&e[i].niveau);
+        for(j=0 ; j<5 ; j++)
+            fscanf(F, " ; %f",&e[i].cotisation[j]);
+        i++;
+    }
+    fclose(F);
+    n = i-1;
+    FIN;
+    printf("|NUMERO      |CNI         |NOMS        |PRENOMS     |AGES        |FILIERES    |NIVEAU      |COTISATIONS |\n");
+    for(i=0 ; i<n-1 ; i++)
+    {
+        LINES;
+        printf("|%12d|%12s|%12s|%12s|%12d|%12s|%12d|%12.1f|\n",i+1,e[i].CNI,e[i].nom,e[i].prenom,e[i].age,e[i].filiere,e[i].niveau,somme(e[i].cotisation,5));
+    }
+    LINES;
+    printf("|%12d|%12s|%12s|%12s|%12d|%12s|%12d|%12.1f|\n",i+1,e[i].CNI,e[i].nom,e[i].prenom,e[i].age,e[i].filiere,e[i].niveau,somme(e[i].cotisation,5));
+    FIN;
+}
+void solvable(void)
+{
+    etud e[SIZE];
+    int i = 0,j,n;
+    FILE *F;
+    F=ouverture1("../files/etudiants.txt");
+    while(!feof(F))
+    {
+        fscanf(F, "%s ; %s ; %s ; %d ; %s ; %d", e[i].CNI,e[i].nom,e[i].prenom,&e[i].age,e[i].filiere,&e[i].niveau);
+        for(j=0 ; j<5 ; j++)
+            fscanf(F, " ; %f",&e[i].cotisation[j]);
+        i++;
+    }
+    fclose(F);
+    n = i-1;
+    int k=0;
+    for(i=0 ; i<n ; i++)
+    {
+        if(etat(&e[i]))
+        {
+            printf("%10d|%10s|%10s|%10s|%10d|%10s|%10d|",k+1,e[i].CNI,e[i].nom,e[i].prenom,e[i].age,e[i].filiere,e[i].niveau);
+            for(j=0 ; j<5 ; j++)
+                printf("%9.1f", e[i].cotisation[j]);
+            printf("%9.1f\n", somme(e[i].cotisation,5));
+            k++;
+        }
+    }
+    F = ouverture2("../files/etat.txt");
+    for(i=0 ; i<n ;i++)
+    {
+        if(etat(&e[i]))
+        {    
+            fprintf(F, "%s ; %s ; %s ; %d ; %s ; %d",e[i].CNI,e[i].nom,e[i].prenom,e[i].age,e[i].filiere,e[i].niveau);
+            for(j=0 ; j<5 ; j++)
+                fprintf(F, " ; %.1f", e[i].cotisation[j]);
+            fprintf(F," ; %.1f",somme(e[i].cotisation , 5));
+            fprintf(F,"\n");
+        }
+        
+    }
+    fclose(F);
+}
+int etat(etud* e)
+{
+    int i=0;
+    while((e->cotisation[i]!=0)&&(i<5))
+        i++;
+    if(i<5)
+        return 0;
+    else
+        return 1;
+}
+void insolvable(void)
+{
+    int  n,i = 0,j;
+    etud e[SIZE];
+    FILE *F;
+    F=ouverture1("../files/etudiants.txt");
+    while(!feof(F))
+    {
+        fscanf(F, "%s ; %s ; %s ; %d ; %s ; %d", e[i].CNI,e[i].nom,e[i].prenom,&e[i].age,e[i].filiere,&e[i].niveau);
+        for(j=0 ; j<5 ; j++)
+            fscanf(F, " ; %f",&e[i].cotisation[j]);
+        i++;
+    }
+    fclose(F);
+    n = i-1;
+    for(i=0 ; i<n ; i++)
+    {
+        if(!etat(&e[i]))
+        {
+            printf("%10d|%10s|%10s|%10s|%10d|%10s|%10d|",i+1,e[i].CNI,e[i].nom,e[i].prenom,e[i].age,e[i].filiere,e[i].niveau);
+            for(j=0 ; j<5 ; j++)
+                printf("%9.1f", e[i].cotisation[j]);
+            printf("%9.1f\n", somme(e[i].cotisation,5));
+        }
+    }
+    F = ouverture2("../files/mauvais.txt");
+    for(i=0 ; i<n ;i++)
+    {
+        if(!etat(&e[i]))
+        {    
+            fprintf(F, "%s ; %s ; %s ; %d ; %s ; %d",e[i].CNI,e[i].nom,e[i].prenom,e[i].age,e[i].filiere,e[i].niveau);
+            for(j=0 ; j<5 ; j++)
+                fprintf(F, " ; %.1f", e[i].cotisation[j]);
+            fprintf(F," ; %.1f",somme(e[i].cotisation , 5));
+            fprintf(F,"\n");
+        }
+        
+    }
+    fclose(F);
+}
+float statistique(void)
+{
+    etud e[SIZE];
+    float insol=0,n;
+    int i=0,j;
+    FILE* F;
+    F = ouverture1("../files/etudiants.txt");
+    while(!feof(F))
+    {
+        fscanf(F, "%s ; %s ; %s ; %d ; %s ; %d", e[i].CNI,e[i].nom,e[i].prenom,&e[i].age,e[i].filiere,&e[i].niveau);
+        for(j=0 ; j<5 ; j++)
+            fscanf(F, " ; %f",&e[i].cotisation[j]);
+        i++;
+    }
+    fclose(F);
+    n = i-1;
+    int nombre = 0;
+    for(i=0 ; i < n ; i++)
+        if(!etat(&e[i]))
+            nombre++;
+    insol = ((float)nombre/n)*100;
+    return insol;
+}
+void suprimer(void)
+{
+    etud e[SIZE];
+    int i=0,j,n;
+    FILE* F;
+    F = ouverture1("../files/etudiants.txt");
+    while(!feof(F))
+    {
+        fscanf(F, "%s ; %s ; %s ; %d ; %s ; %d", e[i].CNI,e[i].nom,e[i].prenom,&e[i].age,e[i].filiere,&e[i].niveau);
+        for(j=0 ; j<5 ; j++)
+            fscanf(F, " ; %f",&e[i].cotisation[j]);
+        i++;
+    }
+    fclose(F);
+    n = i-1;
+    for(i=0 ; i<n ; i++)
+    {
+        if(somme(e[i].cotisation,5))
+        {
+            fprintf(F,"%s ; ",e[i].CNI);
+            fprintf(F,"%s ; ",e[i].nom);
+            fprintf(F,"%s ; ",e[i].prenom);
+            fprintf(F,"%d ; ",e[i].age);
+            fprintf(F,"%s ; ",e[i].filiere);
+            fprintf(F,"%d",e[i].niveau);
+            for(j=0 ; j<5 ; j++)
+                fprintf(F," ; %.1f",e[i].cotisation[j]);
+            fprintf(F, "\n");
+        }
+    }
+    F = ouverture1("../files/etat.txt");
+    while(!feof(F))
+    {
+        fscanf(F, "%s ; %s ; %s ; %d ; %s ; %d", e[i].CNI,e[i].nom,e[i].prenom,&e[i].age,e[i].filiere,&e[i].niveau);
+        for(j=0 ; j<5 ; j++)
+            fscanf(F, " ; %f",&e[i].cotisation[j]);
+        i++;
+    }
+    fclose(F);
+    n = i-1;
+    for(i=0 ; i<n ; i++)
+    {
+        if(somme(e[i].cotisation,5))
+        {
+            fprintf(F,"%s ; ",e[i].CNI);
+            fprintf(F,"%s ; ",e[i].nom);
+            fprintf(F,"%s ; ",e[i].prenom);
+            fprintf(F,"%d ; ",e[i].age);
+            fprintf(F,"%s ; ",e[i].filiere);
+            fprintf(F,"%d",e[i].niveau);
+            for(j=0 ; j<5 ; j++)
+                fprintf(F," ; %.1f",e[i].cotisation[j]);
+            fprintf(F, "\n");
+        }
+    }
+    F = ouverture1("../files/mauvais.txt");
+    while(!feof(F))
+    {
+        fscanf(F, "%s ; %s ; %s ; %d ; %s ; %d", e[i].CNI,e[i].nom,e[i].prenom,&e[i].age,e[i].filiere,&e[i].niveau);
+        for(j=0 ; j<5 ; j++)
+            fscanf(F, " ; %f",&e[i].cotisation[j]);
+        i++;
+    }
+    fclose(F);
+    n = i-1;
+    for(i=0 ; i<n ; i++)
+    {
+        if(somme(e[i].cotisation,5))
+        {
+            fprintf(F,"%s ; ",e[i].CNI);
+            fprintf(F,"%s ; ",e[i].nom);
+            fprintf(F,"%s ; ",e[i].prenom);
+            fprintf(F,"%d ; ",e[i].age);
+            fprintf(F,"%s ; ",e[i].filiere);
+            fprintf(F,"%d",e[i].niveau);
+            for(j=0 ; j<5 ; j++)
+                fprintf(F," ; %.1f",e[i].cotisation[j]);
+            fprintf(F, "\n");
+        }
+    }
+}
+void recherche(char matricule[10])
+{
+    etud e[SIZE];
+    int i=0,j,n,trouver=-1;
+    FILE* F;
+    F = ouverture1("../files/etudiants.txt");
+    while(!feof(F))
+    {
+        fscanf(F, "%s ; %s ; %s ; %d ; %s ; %d", e[i].CNI,e[i].nom,e[i].prenom,&e[i].age,e[i].filiere,&e[i].niveau);
+        for(j=0 ; j<5 ; j++)
+            fscanf(F, " ; %f",&e[i].cotisation[j]);
+        i++;
+    }
+    n=i-1;
+    fclose(F);
+    int p;
+    i = 0;
+    while((i < n) && (trouver == -1))
+    {
+        p = strcmp(e[i].CNI , matricule);
+        if(p ==0)
+           trouver = i; 
+        else
+           i++; 
+    }
+    if(trouver != -1)
+    {
+        printf("%10d|%10s|%10s|%10s|%10d|%10s|%10d|",i+1,e[i].CNI,e[i].nom,e[i].prenom,e[i].age,e[i].filiere,e[i].niveau);
+        for(j=0 ; j<5 ; j++)
+            printf("%9.1f", e[i].cotisation[j]);
+        printf("|%9.1f",somme(e[i].cotisation , 5));
+        printf("\n");
+    }
+    else
+        printf("Le matricule saisie n'exite pas dans la liste des etudiants!!\n");
 }
